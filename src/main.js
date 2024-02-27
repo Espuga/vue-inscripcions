@@ -16,6 +16,8 @@ import Panel from 'primevue/panel';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import InputText from 'primevue/inputtext';
+import Tooltip from 'primevue/tooltip';
+import InputSwitch from 'primevue/inputswitch';
 
 
 import "primevue/resources/themes/lara-light-blue/theme.css";
@@ -31,6 +33,9 @@ app.component('Panel', Panel);
 app.component('IconField', IconField);
 app.component('InputIcon', InputIcon);
 app.component('InputText', InputText);
+app.component('InputSwitch', InputSwitch);
+
+app.directive('tooltip', Tooltip);
 
 app.use(PrimeVue)
 app.use(ToastService)

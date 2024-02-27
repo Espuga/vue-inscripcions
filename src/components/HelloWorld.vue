@@ -4,9 +4,14 @@ import { FilterMatchMode } from 'primevue/api';
 import axios from 'axios'
 
 const dataDataTable = ref()
+const dorsalsDonats = ref([])
+// const api = ref("http://79.157.197.107:8080")
+const api = ref("http://127.0.0.1:8080")
+
+const checked = ref()
 
 onMounted(() => {
-  axios.get("http://79.157.197.107:8080/inscripcions/getUsers")
+  axios.get(api.value+"/inscripcions/getUsers")
     .then((res) => {
       if(res.data.ok) {
         dataDataTable.value = res.data.users
@@ -15,6 +20,10 @@ onMounted(() => {
     })
 })
 
+const dorsalDonat = (data) => {
+  dorsalsDonats.value.push(data)
+  dataDataTable.value.splice(dataDataTable.value.indexOf(data), 1)
+}
 
 const filters = ref({
   // global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -36,44 +45,15 @@ const filters = ref({
             <i class="pi pi-database" style="font-size: 20px" />
             <span class="text-lg ml-2"> Llistat d'inscrits Stravada  </span>
           </div>
+          <div class="flex justify-content-center gap-3">
+            <label>Dorsals donats</label>
+            <InputSwitch v-model="checked" />
+          </div>
         </template>
         <!-- TABLE -->
-        <DataTable :value="dataDataTable" stripedRows paginator :rows="20" 
+        <DataTable :value="checked ? dorsalsDonats : dataDataTable" stripedRows paginator :rows="20" 
         tableStyle="min-width: 20rem" class="p-datatable-sm" removableSort
         v-model:filters="filters" filterDisplay="row" :globalFilterFields="['dorsal', 'nom', 'cognom']"> 
-          <!-- <template #header>
-            <div class="flex justify-content-end">
-              <IconField iconPosition="left">
-                <InputIcon>
-                  <i class="pi pi-search" />
-                </InputIcon>
-                <InputText v-model="filters['global'].value" placeholder="Keyword Search" />
-              </IconField>
-            </div>
-          </template> -->
-          <!-- <template #paginatorstart>
-            <Button @click="dataDataTable = originalDataTable" type="button" icon="pi pi-refresh" text />
-          </template>
-          <template #paginatorend>
-            <Button type="button" icon="pi pi-download" @click="exportTable($event)" text />
-          </template>
-          <template #empty>
-            <i class="pi pi-ban" style="font-size: 20px" />
-            There are no transactions in {{ group.data.value.name }}
-          </template> -->
-
-
-          <!-- 
-
-            <Column field="name" header="Name" style="min-width: 12rem">
-                <template #body="{ data }">
-                    {{ data.name }}
-                </template>
-                <template #filter="{ filterModel, filterCallback }">
-                    <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Search by name" />
-                </template>
-            </Column>
-           -->
 
           <Column field="dorsal" header="Dorsal" style="width: 10%;" class="text-900" >
             <template #body="{ data }">
@@ -103,6 +83,13 @@ const filters = ref({
           <Column field="poblacio" header="Poblacio" class="text-900" ></Column>
           <Column field="club" header="Club" class="text-900" ></Column>
           <Column field="electrica" header="Electrica" class="text-900" ></Column>
+          <Column style="width:5%" bodyStyle="text-align:center">
+            <template #body="{ data }">
+              <a href="#" @click="dorsalDonat(data)">
+                <i class="pi pi-check text-green-500" v-tooltip.bottom="'Dorsal donat'" style="font-size: 20px" />
+              </a>
+            </template>
+          </Column>
         </DataTable>
       </Panel>
   </div>
